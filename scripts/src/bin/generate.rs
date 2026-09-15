@@ -140,6 +140,6 @@ fn main() {
 		.chain(icon)
 		.for_each(|line| {
 			file.write_all(line.as_bytes()).unwrap();
-			file.write_all(&[b'\n']).unwrap();
+			file.write_all(b"\n").unwrap();
 		});
 }
