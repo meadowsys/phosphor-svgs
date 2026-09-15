@@ -13,6 +13,11 @@ include = [
 	"!phosphor-core/src"
 ]
 
+[features]
+default = ["str"]
+
+str = []
+
 [workspace]
 resolver = "2"
 members = [

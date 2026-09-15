@@ -72,7 +72,7 @@ fn main() {
 
 	let style = {
 		let mut style = Vec::new();
-		style.push("pub mod style {".into());
+		style.push("#[cfg(feature = \"str\")]\npub mod style {".into());
 
 		for (s, icons) in grouped_by_style {
 			style.push(format!("\tpub mod {s} {{"));
@@ -95,7 +95,7 @@ fn main() {
 
 	let icon = {
 		let mut icon = Vec::new();
-		icon.push("pub mod icon {".into());
+		icon.push("#[cfg(feature = \"str\")]\npub mod icon {".into());
 
 		for (i, style) in grouped_by_icon {
 			let i_underscored = i.chars()

@@ -2,6 +2,7 @@
 
 pub mod util;
 
+#[cfg(feature = "str")]
 pub mod style {
 	pub mod bold {
 		pub const ACORN: &str = include_str!("../phosphor-core/assets/bold/acorn-bold.svg");
@@ -9089,6 +9090,7 @@ pub mod style {
 	}
 }
 
+#[cfg(feature = "str")]
 pub mod icon {
 	pub mod acorn {
 		pub const BOLD: &str = include_str!("../phosphor-core/assets/bold/acorn-bold.svg");
