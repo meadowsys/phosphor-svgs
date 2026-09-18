@@ -176,8 +176,11 @@ impl Icon {
 		assert!(path.is_element(), "svg child must be element");
 		assert_eq!(path.tag_name().name(), "path", "svg child must be path tag");
 		assert_eq!(path.tag_name().namespace(), Some("http://www.w3.org/2000/svg"), "svg child path should have svg xmlns");
+		assert!(!path.has_children(), "svg child path should have no children");
+
 		let mut path_d = path.attribute("d").expect("path d attr must exist").into();
 		let mut path_d_duotone = None;
+
 		match path.attributes().len() {
 			1 => {
 				// other
@@ -190,6 +193,7 @@ impl Icon {
 				assert!(path.is_element(), "svg child 2 must be element");
 				assert_eq!(path.tag_name().name(), "path", "svg child 2 must be path tag");
 				assert_eq!(path.tag_name().namespace(), Some("http://www.w3.org/2000/svg"), "svg child 2 path should have svg xmlns");
+				assert!(!path.has_children(), "svg child path 2 should have no children");
 				assert_eq!(path.attributes().len(), 1, "extra attrs in path tag found");
 				path_d = path.attribute("d").expect("path d attr must exist").into();
 			}
@@ -199,8 +203,6 @@ impl Icon {
 			}
 		}
 		assert!(svg_children.next().is_none(), "svg should have only one child");
-
-		assert!(!path.has_children(), "path should have no children");
 
 		Self { path_d, path_d_duotone }
 	}
