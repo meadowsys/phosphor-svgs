@@ -5,3 +5,4 @@ publish = false
 
 [dependencies]
 ahash = "0.8.12"
+roxmltree = { version = "0.21.1", default-features = false, features = ["std"] }
