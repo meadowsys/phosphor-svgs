@@ -13,9 +13,15 @@ include = [
 	"!phosphor-core/src"
 ]
 
+[dependencies]
+leptos-0-8 = { version = "0.8", package = "leptos", default-features = false, optional = true }
+
 [features]
 default = ["str"]
 
+leptos-0-8 = [
+	"dep:leptos-0-8"
+]
 str = []
 
 [workspace]
