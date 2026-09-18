@@ -1,17 +1,17 @@
 use ahash::RandomState;
 use roxmltree::Document as XmlDocument;
-use std::{ fs, mem, path };
+use std::{ fs, mem };
+use std::collections::{ BTreeMap, HashMap };
 use std::iter::repeat;
 use std::io::{ BufWriter, Write as _ };
+use std::path::PathBuf;
 
 const ROOT: &str = "phosphor-core/assets";
-
-type HashMap<K, V> = std::collections::HashMap<K, V, RandomState>;
 
 // run in `/scripts` dir
 
 fn main() {
-	let mut root_dir = path::PathBuf::new();
+	let mut root_dir = PathBuf::new();
 	root_dir.push("..");
 	root_dir.push(ROOT);
 
@@ -24,7 +24,7 @@ fn main() {
 	let entries = styles.iter()
 		.map(|style| {
 			let style = &**style;
-			let mut dir_path = path::PathBuf::from(&root_dir);
+			let mut dir_path = PathBuf::from(&root_dir);
 			dir_path.push(style);
 			(style, dir_path)
 		})
@@ -43,7 +43,7 @@ fn main() {
 		.collect::<Vec<_>>();
 
 	let grouped_by_style = {
-		let mut grouped = HashMap::<_, Vec<_>>::with_hasher(RandomState::new());
+		let mut grouped = HashMap::<_, Vec<_>, _>::with_hasher(RandomState::new());
 
 		for (style, icon, suffix) in &entries {
 			let entry = grouped
@@ -56,7 +56,7 @@ fn main() {
 	};
 
 	let grouped_by_icon = {
-		let mut grouped = HashMap::<_, Vec<_>>::with_hasher(RandomState::new());
+		let mut grouped = HashMap::<_, Vec<_>, _>::with_hasher(RandomState::new());
 
 		for (style, icon, suffix) in &entries {
 			let entry = grouped
@@ -148,12 +148,97 @@ fn main() {
 		});
 }
 
+struct IconMap {
+	map: BTreeMap<String, IconSet>
+}
+
+impl IconMap {
+	fn read(
+		// relative from scripts/ and src/ are the same so we only need one
+		asset_path: &str
+	) -> Self {
+		let mut this = Self { map: BTreeMap::new() };
+		let mut styles = fs::read_dir(asset_path)
+			.unwrap()
+			.map(|dirent| dirent.unwrap().file_name().to_str().unwrap().to_owned())
+			.collect::<Vec<_>>();
+		styles.sort_unstable();
+
+		let mut suffix_map = SuffixMap::new();
+
+		for style in styles {
+			let mut dir_path = String::new();
+			dir_path.reserve(asset_path.len() + 1 + style.len());
+			dir_path.push_str(asset_path);
+			#[expect(clippy::single_char_add_str)]
+			dir_path.push_str("/");
+			dir_path.push_str(&style);
+
+			let suffix = suffix_map.get_suffix(&style);
+
+			let icons = fs::read_dir(&*dir_path)
+				.unwrap()
+				.map(|dirent| dirent.unwrap().file_name().to_str().unwrap().to_owned())
+				.map(|filename| filename.strip_suffix(suffix).unwrap().to_owned())
+				.collect::<Vec<_>>();
+
+			for icon in icons {
+				let mut include_path = dir_path.clone();
+				include_path.reserve(1 + icon.len() + suffix.len());
+				#[expect(clippy::single_char_add_str)]
+				include_path.push_str("/");
+				include_path.push_str(&icon);
+				include_path.push_str(suffix);
+
+				let raw_svg = fs::read_to_string(&*include_path).unwrap();
+				let data = IconData::parse(&raw_svg);
+
+				let icon_entry = this.map.entry(icon).or_default();
+				let icon_entry = match &*style {
+					"bold" => { &mut icon_entry.bold }
+					"duotone" => { &mut icon_entry.duotone }
+					"fill" => { &mut icon_entry.fill }
+					"light" => { &mut icon_entry.light }
+					"regular" => { &mut icon_entry.regular }
+					"thin" => { &mut icon_entry.thin }
+					_ => { panic!("new icon variant introduced?") }
+				};
+				assert!(icon_entry.is_none());
+
+				*icon_entry = Some(Icon {
+					include_path,
+					raw_svg,
+					data
+				});
+			}
+		}
+
+		this
+	}
+}
+
+#[derive(Default)]
+struct IconSet {
+	bold: Option<Icon>,
+	duotone: Option<Icon>,
+	fill: Option<Icon>,
+	light: Option<Icon>,
+	regular: Option<Icon>,
+	thin: Option<Icon>,
+}
+
 struct Icon {
+	include_path: String,
+	raw_svg: String,
+	data: IconData
+}
+
+struct IconData {
 	pub path_d: String,
 	pub path_d_duotone: Option<String>
 }
 
-impl Icon {
+impl IconData {
 	fn parse(icon: &str) -> Self {
 		// todo currently does not parse duotone
 		let parsed = XmlDocument::parse(icon).expect("invalid icon");
@@ -205,5 +290,36 @@ impl Icon {
 		assert!(svg_children.next().is_none(), "svg should have only one child");
 
 		Self { path_d, path_d_duotone }
+	}
+}
+
+// is this a meaningful optimisation? probably not. only probably saves
+// a few thousand allocations, it's not much (/not s)
+struct SuffixMap {
+	inner: Vec<(String, String)>
+}
+
+impl SuffixMap {
+	fn new() -> Self {
+		Self { inner: Vec::with_capacity(6) }
+	}
+
+	fn get_suffix(&mut self, style: &str) -> &str {
+		let suffix = self.inner
+			.iter()
+			.find(|(s, _)| &**s == style)
+			.map(|(_, suffix)| suffix);
+		if let Some(suffix) = suffix {
+			return suffix
+		}
+
+		let suffix = if style == "regular" {
+			".svg".into()
+		} else {
+			format!("-{style}.svg")
+		};
+		self.inner.push((style.into(), suffix));
+
+		self.get_suffix(style)
 	}
 }
