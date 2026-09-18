@@ -24,6 +24,19 @@ leptos-0-8 = [
 ]
 str = []
 
+[package.metadata.docs.rs]
+rustdoc-args = [
+	"--cfg",
+	"docsrs"
+]
+feature = [
+	"leptos-0-8",
+	"str"
+]
+targets = [
+	"aarch64-apple-darwin"
+]
+
 [workspace]
 resolver = "2"
 members = [
