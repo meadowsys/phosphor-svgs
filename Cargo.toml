@@ -29,7 +29,7 @@ rustdoc-args = [
 	"--cfg",
 	"docsrs"
 ]
-feature = [
+features = [
 	"leptos-0-8",
 	"str"
 ]
