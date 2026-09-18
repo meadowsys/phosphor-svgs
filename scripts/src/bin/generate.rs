@@ -299,7 +299,7 @@ impl IconMap {
 					});
 				let mut chars = style.chars();
 				if let Some(start) = chars.next() {
-					component_name.push(start);
+					component_name.push(start.to_ascii_uppercase());
 					component_name.push_str(chars.as_str());
 				}
 
