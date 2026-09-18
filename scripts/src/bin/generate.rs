@@ -1,8 +1,10 @@
-use ::std::{ fs, path };
-use ::std::iter::repeat;
-use ::std::io::{ BufWriter, Write as _ };
-use ::hashbrown::HashMap;
+use ahash::RandomState;
+use std::{ fs, path };
+use std::iter::repeat;
+use std::io::{ BufWriter, Write as _ };
 const ROOT: &str = "phosphor-core/assets";
+
+type HashMap<K, V> = std::collections::HashMap<K, V, RandomState>;
 
 // run in `/scripts` dir
 
@@ -39,7 +41,7 @@ fn main() {
 		.collect::<Vec<_>>();
 
 	let grouped_by_style = {
-		let mut grouped = HashMap::<_, Vec<_>>::new();
+		let mut grouped = HashMap::<_, Vec<_>>::with_hasher(RandomState::new());
 
 		for (style, icon, suffix) in &entries {
 			let entry = grouped
@@ -52,7 +54,7 @@ fn main() {
 	};
 
 	let grouped_by_icon = {
-		let mut grouped = HashMap::<_, Vec<_>>::new();
+		let mut grouped = HashMap::<_, Vec<_>>::with_hasher(RandomState::new());
 
 		for (style, icon, suffix) in &entries {
 			let entry = grouped
