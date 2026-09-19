@@ -224,7 +224,7 @@ fn generate_component(icon: &Icon) -> String {
 		component.push_str(r#"#[doc = "Opacity of this duotone icon"] #[prop(into, default = Signal::stored(0.2))] duotone_opacity: Signal<f32>"#);
 	}
 
-	component.push_str(r#") -> impl IntoView { view!{ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor">"#);
+	component.push_str(r#") -> impl IntoView { view! { <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor">"#);
 
 	for (path, has_opacity) in &*data.paths {
 		component.push_str(r#"<path d=""#);
