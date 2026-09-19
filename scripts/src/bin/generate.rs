@@ -127,6 +127,7 @@ fn main() {
 		"",
 		"#![cfg_attr(docsrs, feature(doc_cfg))]",
 		"",
+		r#"#[cfg(feature = "str")]"#,
 		"pub mod util;",
 		r#"#[cfg(feature = "leptos-0-8")]"#,
 		"pub mod leptos;",

@@ -2,6 +2,7 @@
 
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
+#[cfg(feature = "str")]
 pub mod util;
 #[cfg(feature = "leptos-0-8")]
 pub mod leptos;
