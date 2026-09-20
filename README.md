@@ -22,22 +22,28 @@ use phosphor_svgs::icon::alarm::BOLD;
 
 Components for Leptos v0.8 are available under the `leptos-0-8` feature. These components are styled with plain CSS (or tailwind or some other styling library).
 
-Every icon and weight combination is available as its own icon:
+Every icon is exported as a struct in the `leptos::icons` module, and weights are exported from `leptos` module:
 
 ```rs
 use leptos::prelude::*;
-use phosphor_svgs::leptos::CheckCircleRegular;
-use phosphor_svgs::leptos::AlarmBold;
+use phosphor_svgs::leptos::{ Bold, Regular };
+use phosphor_svgs::leptos::icons::{ Alarm, CheckCircle };
 
 #[component]
 pub fn MyComponent() -> impl IntoView {
    view! {
-      <CheckCircleRegular style:height="32px" style:color="red" />
+      // There are two ways to specify icons:
+
+      // as props...
+      <Icon icon=CheckCircle weight=Regular style:height="32px" style:color="red" />
+
+      // ... or as generics...
+      <Icon<CheckCircle, Regular> style:height="32px" style:color="red" />
 
       // tailwindcss example
       // yes, css "color" style is text-<color> in tailwind...
       // which feels weird for this usage of it, but it is what it is
-      <AlarmBold attr:class="h-8 text-red-300" />
+      <Icon<Alarm, Bold> attr:class="h-8 text-red-300" />
    }
 }
 ```
