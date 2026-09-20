@@ -204,7 +204,7 @@ fn generate_icon(iconset: &IconSet) -> String {
 	// rather allocate too much, than have to reallocate/copy, I think
 	// todo reevaluate this
 	let mut icon = String::with_capacity(16000);
-	icon.push_str("#[derive(Default)]\n#[doc(hidden)]\npub struct ");
+	icon.push_str("#[derive(Default)]\npub struct ");
 	icon.push_str(pascalcase_name);
 	icon.push_str(";\nimpl Icon for ");
 	icon.push_str(pascalcase_name);
