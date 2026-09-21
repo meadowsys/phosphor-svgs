@@ -1,4 +1,3 @@
-use super::weights::{ Bold, Duotone, Fill, Light, Regular, Thin };
 use leptos::{ IntoView, view };
 use leptos::attr::custom::CustomAttribute as _;
 use leptos::either::Either;
@@ -23,68 +22,9 @@ pub trait Icon {
 
 pub trait Weight {
 	fn get_icon_data<I: Icon>() -> impl IconWeightData;
+
 	#[doc(hidden)]
 	fn default() -> Self;
-}
-
-impl Weight for Bold {
-	#[inline]
-	fn get_icon_data<I: Icon>() -> impl IconWeightData {
-		I::bold_data()
-	}
-
-	#[inline]
-	fn default() -> Self { Bold }
-}
-
-impl Weight for Duotone {
-	#[inline]
-	fn get_icon_data<I: Icon>() -> impl IconWeightData {
-		I::duotone_data()
-	}
-
-	#[inline]
-	fn default() -> Self { Duotone }
-}
-
-impl Weight for Fill {
-	#[inline]
-	fn get_icon_data<I: Icon>() -> impl IconWeightData {
-		I::fill_data()
-	}
-
-	#[inline]
-	fn default() -> Self { Fill }
-}
-
-impl Weight for Light {
-	#[inline]
-	fn get_icon_data<I: Icon>() -> impl IconWeightData {
-		I::light_data()
-	}
-
-	#[inline]
-	fn default() -> Self { Light }
-}
-
-impl Weight for Regular {
-	#[inline]
-	fn get_icon_data<I: Icon>() -> impl IconWeightData {
-		I::regular_data()
-	}
-
-	#[inline]
-	fn default() -> Self { Regular }
-}
-
-impl Weight for Thin {
-	#[inline]
-	fn get_icon_data<I: Icon>() -> impl IconWeightData {
-		I::thin_data()
-	}
-
-	#[inline]
-	fn default() -> Self { Thin }
 }
 
 pub trait IconWeightData {
