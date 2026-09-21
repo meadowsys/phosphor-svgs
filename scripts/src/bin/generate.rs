@@ -237,7 +237,9 @@ fn generate_icon(iconset: &IconSet) -> String {
 		icon.push_str("] }");
 	}
 
-	icon.push_str("\n\t#[inline] fn default() -> Self { Self }\n}");
+	icon.push_str("\n\t#[inline] fn default() -> Self { ");
+	icon.push_str(pascalcase_name);
+	icon.push_str(" }\n}");
 
 	icon
 }

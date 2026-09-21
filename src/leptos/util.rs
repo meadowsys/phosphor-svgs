@@ -34,7 +34,7 @@ impl Weight for Bold {
 	}
 
 	#[inline]
-	fn default() -> Self { Self }
+	fn default() -> Self { Bold }
 }
 
 impl Weight for Duotone {
@@ -44,7 +44,7 @@ impl Weight for Duotone {
 	}
 
 	#[inline]
-	fn default() -> Self { Self }
+	fn default() -> Self { Duotone }
 }
 
 impl Weight for Fill {
@@ -54,7 +54,7 @@ impl Weight for Fill {
 	}
 
 	#[inline]
-	fn default() -> Self { Self }
+	fn default() -> Self { Fill }
 }
 
 impl Weight for Light {
@@ -64,7 +64,7 @@ impl Weight for Light {
 	}
 
 	#[inline]
-	fn default() -> Self { Self }
+	fn default() -> Self { Light }
 }
 
 impl Weight for Regular {
@@ -74,7 +74,7 @@ impl Weight for Regular {
 	}
 
 	#[inline]
-	fn default() -> Self { Self }
+	fn default() -> Self { Regular }
 }
 
 impl Weight for Thin {
@@ -84,7 +84,7 @@ impl Weight for Thin {
 	}
 
 	#[inline]
-	fn default() -> Self { Self }
+	fn default() -> Self { Thin }
 }
 
 pub trait IconWeightData {
