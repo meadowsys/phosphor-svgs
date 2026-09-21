@@ -1,4 +1,4 @@
-use super::{ Bold, Duotone, Fill, Light, Regular, Thin };
+use super::weights::{ Bold, Duotone, Fill, Light, Regular, Thin };
 use leptos::{ IntoView, view };
 use leptos::attr::custom::CustomAttribute as _;
 use leptos::either::Either;

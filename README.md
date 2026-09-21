@@ -22,12 +22,13 @@ use phosphor_svgs::icon::alarm::BOLD;
 
 Components for Leptos v0.8 are available under the `leptos-0-8` feature. These components are styled with plain CSS (or tailwind or some other styling library).
 
-Every icon is exported as a struct in the `leptos::icons` module, and weights are exported from `leptos` module:
+Every icon is exported as a struct in the `leptos::icons` module, and weights are exported from `leptos::weights` module:
 
 ```rs
 use leptos::prelude::*;
-use phosphor_svgs::leptos::{ Bold, Regular };
+use phosphor_svgs::leptos::Icon;
 use phosphor_svgs::leptos::icons::{ Alarm, CheckCircle };
+use phosphor_svgs::leptos::weights::{ Bold, Regular };
 
 #[component]
 pub fn MyComponent() -> impl IntoView {
@@ -45,6 +46,33 @@ pub fn MyComponent() -> impl IntoView {
       // which feels weird for this usage of it, but it is what it is
       <Icon<Alarm, Bold> attr:class="h-8 text-red-300" />
    }
+}
+```
+
+The `Icon` component is designed to be statically typed to the component and weight to help ensure that unused icon data isn't included needlessly. If you need to reactively change icons, consider to wrap seperate instances of components in `Either` or convert them into `AnyView` using `into_any()`:
+
+```rs
+use leptos::prelude::*;
+use leptos::either::Either;
+use phosphor_svgs::leptos::Icon;
+use phosphor_svgs::leptos::icons::{ Alarm, CheckCircle };
+use phosphor_svgs::leptos::weights::{ Bold, Regular };
+
+let (condition, _) = signal(false);
+let icon_either = move || if *condition.read() {
+   Either::Left(view! { <Icon<CheckCircle, Regular> /> })
+} else {
+   Either::Right(view! { <Icon<Alarm, Bold> /> })
+};
+let icon_any = move || if *condition.read() {
+   view! { <Icon<CheckCircle, Regular> /> }.into_any()
+} else {
+   view! { <Icon<Alarm, Bold> /> }.into_any()
+};
+
+view! {
+   {icon_either}
+   {icon_any}
 }
 ```
 
