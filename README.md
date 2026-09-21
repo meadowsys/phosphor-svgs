@@ -42,9 +42,10 @@ pub fn MyComponent() -> impl IntoView {
       <Icon<CheckCircle, Regular> style:height="32px" style:color="red" />
 
       // tailwindcss example
-      // yes, css "color" style is text-<color> in tailwind...
-      // which feels weird for this usage of it, but it is what it is
-      <Icon<Alarm, Bold> attr:class="h-8 text-red-300" />
+      <Icon<Alarm, Bold> attr:class="h-8 fill-red-300" />
+
+      // unlike the source icons,we don't set fill="currentColor" for more flexibility
+      <Icon<Alarm, Bold> attr:class="h-8 fill-current text-red-300" />
    }
 }
 ```

@@ -26,7 +26,7 @@ where
 		.into_paths(duotone_opacity);
 
 	view! {
-		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor">
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
 			{paths}
 		</svg>
 	}
