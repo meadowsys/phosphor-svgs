@@ -16,52 +16,75 @@ pub trait Icon {
 	fn light_data() -> impl IconWeightData;
 	fn regular_data() -> impl IconWeightData;
 	fn thin_data() -> impl IconWeightData;
+
+	#[doc(hidden)]
+	fn default() -> Self;
 }
 
-pub trait GetIconData {
-	fn get() -> impl IconWeightData;
+pub trait Weight {
+	fn get_icon_data<I: Icon>() -> impl IconWeightData;
+	#[doc(hidden)]
+	fn default() -> Self;
 }
 
-impl<I: Icon> GetIconData for (I, Bold) {
+impl Weight for Bold {
 	#[inline]
-	fn get() -> impl IconWeightData {
+	fn get_icon_data<I: Icon>() -> impl IconWeightData {
 		I::bold_data()
 	}
+
+	#[inline]
+	fn default() -> Self { Self }
 }
 
-impl<I: Icon> GetIconData for (I, Duotone) {
+impl Weight for Duotone {
 	#[inline]
-	fn get() -> impl IconWeightData {
+	fn get_icon_data<I: Icon>() -> impl IconWeightData {
 		I::duotone_data()
 	}
+
+	#[inline]
+	fn default() -> Self { Self }
 }
 
-impl<I: Icon> GetIconData for (I, Fill) {
+impl Weight for Fill {
 	#[inline]
-	fn get() -> impl IconWeightData {
+	fn get_icon_data<I: Icon>() -> impl IconWeightData {
 		I::fill_data()
 	}
+
+	#[inline]
+	fn default() -> Self { Self }
 }
 
-impl<I: Icon> GetIconData for (I, Light) {
+impl Weight for Light {
 	#[inline]
-	fn get() -> impl IconWeightData {
+	fn get_icon_data<I: Icon>() -> impl IconWeightData {
 		I::light_data()
 	}
+
+	#[inline]
+	fn default() -> Self { Self }
 }
 
-impl<I: Icon> GetIconData for (I, Regular) {
+impl Weight for Regular {
 	#[inline]
-	fn get() -> impl IconWeightData {
+	fn get_icon_data<I: Icon>() -> impl IconWeightData {
 		I::regular_data()
 	}
+
+	#[inline]
+	fn default() -> Self { Self }
 }
 
-impl<I: Icon> GetIconData for (I, Thin) {
+impl Weight for Thin {
 	#[inline]
-	fn get() -> impl IconWeightData {
+	fn get_icon_data<I: Icon>() -> impl IconWeightData {
 		I::thin_data()
 	}
+
+	#[inline]
+	fn default() -> Self { Self }
 }
 
 pub trait IconWeightData {

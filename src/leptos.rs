@@ -1,4 +1,4 @@
-use self::util::{ GetIconData, IconWeightData as _ };
+use self::util::{ Icon, IconWeightData as _, Weight };
 use leptos::{ IntoView, component, view };
 use leptos::attr::custom::CustomAttribute as _;
 use leptos::html::ElementChild as _;
@@ -9,23 +9,22 @@ mod util;
 
 #[component]
 pub fn Icon<I, W>(
-	#[prop(optional)]
+	#[prop(default = I::default())]
 	icon: I,
-	#[prop(optional)]
+	#[prop(default = W::default())]
 	weight: W,
 	#[prop(into, default = Signal::stored(0.2))]
 	duotone_opacity: Signal<f32>
 ) -> impl IntoView
 where
-	I: Default,
-	W: Default,
-	(I, W): GetIconData
+	I: Icon,
+	W: Weight
 {
 	let _ = (icon, weight);
 
 	view! {
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor">
-			{<(I, W)>::get().into_paths(duotone_opacity)}
+			{W::get_icon_data::<I>().into_paths(duotone_opacity)}
 		</svg>
 	}
 }
