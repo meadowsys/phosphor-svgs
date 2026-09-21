@@ -22,10 +22,12 @@ where
 	W: Weight
 {
 	let _ = (icon, weight);
+	let paths = W::get_icon_data::<I>()
+		.into_paths(duotone_opacity);
 
 	view! {
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor">
-			{W::get_icon_data::<I>().into_paths(duotone_opacity)}
+			{paths}
 		</svg>
 	}
 }
