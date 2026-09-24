@@ -21,7 +21,9 @@ where
 	I: Icon,
 	W: Weight
 {
+	// these are ZSTs and the values are only to enable attribute API
 	let _ = (icon, weight);
+
 	let paths = W::get_icon_data::<I>()
 		.into_paths(duotone_opacity);
 
