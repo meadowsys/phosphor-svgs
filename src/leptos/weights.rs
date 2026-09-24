@@ -1,67 +1,67 @@
-use super::util::{ Icon, IconWeightData, Weight };
+use super::util::{ Icon, IntoPaths, Weight };
 
 pub struct Bold;
 impl Weight for Bold {
-	#[inline]
-	fn get_icon_data<I: Icon>() -> impl IconWeightData {
+	#[inline(always)]
+	fn get_icon_data<I: Icon>() -> impl IntoPaths {
 		I::bold_data()
 	}
 
-	#[inline]
+	#[inline(always)]
 	fn default() -> Self { Bold }
 }
 
 pub struct Duotone;
 impl Weight for Duotone {
-	#[inline]
-	fn get_icon_data<I: Icon>() -> impl IconWeightData {
+	#[inline(always)]
+	fn get_icon_data<I: Icon>() -> impl IntoPaths {
 		I::duotone_data()
 	}
 
-	#[inline]
+	#[inline(always)]
 	fn default() -> Self { Duotone }
 }
 
 pub struct Fill;
 impl Weight for Fill {
-	#[inline]
-	fn get_icon_data<I: Icon>() -> impl IconWeightData {
+	#[inline(always)]
+	fn get_icon_data<I: Icon>() -> impl IntoPaths {
 		I::fill_data()
 	}
 
-	#[inline]
+	#[inline(always)]
 	fn default() -> Self { Fill }
 }
 
 pub struct Light;
 impl Weight for Light {
-	#[inline]
-	fn get_icon_data<I: Icon>() -> impl IconWeightData {
+	#[inline(always)]
+	fn get_icon_data<I: Icon>() -> impl IntoPaths {
 		I::light_data()
 	}
 
-	#[inline]
+	#[inline(always)]
 	fn default() -> Self { Light }
 }
 
 pub struct Regular;
 impl Weight for Regular {
-	#[inline]
-	fn get_icon_data<I: Icon>() -> impl IconWeightData {
+	#[inline(always)]
+	fn get_icon_data<I: Icon>() -> impl IntoPaths {
 		I::regular_data()
 	}
 
-	#[inline]
+	#[inline(always)]
 	fn default() -> Self { Regular }
 }
 
 pub struct Thin;
 impl Weight for Thin {
-	#[inline]
-	fn get_icon_data<I: Icon>() -> impl IconWeightData {
+	#[inline(always)]
+	fn get_icon_data<I: Icon>() -> impl IntoPaths {
 		I::thin_data()
 	}
 
-	#[inline]
+	#[inline(always)]
 	fn default() -> Self { Thin }
 }

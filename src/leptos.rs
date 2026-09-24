@@ -1,4 +1,4 @@
-use self::util::{ Icon, IconWeightData as _, Weight };
+use self::util::{ Icon, IntoPaths as _, Weight };
 use leptos::{ IntoView, component, view };
 use leptos::attr::custom::CustomAttribute as _;
 use leptos::html::ElementChild as _;
