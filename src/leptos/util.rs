@@ -39,13 +39,13 @@ pub(super) fn po(d: &'static str) -> PathOpacity {
 	PathOpacity { d }
 }
 
-pub trait IntoPath {
-	fn into_path(self, opacity: Signal<f32>) -> impl IntoView;
+pub trait IntoPaths {
+	fn into_paths(self, opacity: Signal<f32>) -> impl IntoView;
 }
 
-impl IntoPath for Path {
+impl IntoPaths for Path {
 	#[inline(always)]
-	fn into_path(self, opacity: Signal<f32>) -> impl IntoView {
+	fn into_paths(self, opacity: Signal<f32>) -> impl IntoView {
 		let _ = opacity;
 		let Self { d } = self;
 
@@ -55,9 +55,9 @@ impl IntoPath for Path {
 	}
 }
 
-impl IntoPath for PathOpacity {
+impl IntoPaths for PathOpacity {
 	#[inline(always)]
-	fn into_path(self, opacity: Signal<f32>) -> impl IntoView {
+	fn into_paths(self, opacity: Signal<f32>) -> impl IntoView {
 		let Self { d } = self;
 
 		view! {
@@ -66,37 +66,23 @@ impl IntoPath for PathOpacity {
 	}
 }
 
-pub trait IntoPaths {
-	fn into_paths(self, opacity: Signal<f32>) -> impl IntoView;
-}
-
-impl<P> IntoPaths for P
-where
-	P: IntoPath
-{
-	#[inline(always)]
-	fn into_paths(self, opacity: Signal<f32>) -> impl IntoView {
-		self.into_path(opacity)
-	}
-}
-
-macro_rules! gen_into_paths {
+macro_rules! gen_into_path {
 	{ $($p:ident)* } => {
 		impl<$($p),*> IntoPaths for ($($p),*)
 		where
-			$($p: IntoPath),*
+			$($p: IntoPaths),*
 		{
 			#[inline(always)]
 			fn into_paths(self, opacity: Signal<f32>) -> impl IntoView {
 				#[expect(non_snake_case, reason = "macro")]
 				let ($($p),*) = self;
-				($($p.into_path(opacity)),*)
+				($($p.into_paths(opacity)),*)
 			}
 		}
 	}
 }
 
-gen_into_paths! { P1 P2 }
-gen_into_paths! { P1 P2 P3 }
-gen_into_paths! { P1 P2 P3 P4 }
-gen_into_paths! { P1 P2 P3 P4 P5 }
+gen_into_path! { P1 P2 }
+gen_into_path! { P1 P2 P3 }
+gen_into_path! { P1 P2 P3 P4 }
+gen_into_path! { P1 P2 P3 P4 P5 }
