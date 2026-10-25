@@ -21,6 +21,12 @@ where
 	I: Icon,
 	W: Weight
 {
+	const {
+		let i = size_of::<I>();
+		let w = size_of::<W>();
+		assert!(i == 0 && w == 0, "sorgy i was curious");
+	}
+
 	// these are ZSTs and the values are only to enable attribute API
 	let _ = (icon, weight);
 
