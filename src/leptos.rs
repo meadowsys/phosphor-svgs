@@ -9,6 +9,7 @@ pub mod icons;
 pub mod weights;
 mod util;
 
+/// Phosphor icon component
 #[component]
 pub fn Icon<I, W>(
 	#[prop(default = I::default())]
