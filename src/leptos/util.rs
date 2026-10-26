@@ -40,6 +40,12 @@ pub(super) fn po(d: &'static str) -> PathOpacity {
 	PathOpacity { d }
 }
 
+/// # Safety
+///
+/// See safety docs on [`NEEDS_OPACITY`] and [`into_paths`]
+///
+/// [`NEEDS_OPACITY`]: IntoPaths::NEEDS_OPACITY
+/// [`into_paths`]: IntoPaths::into_paths
 pub unsafe trait IntoPaths {
 	/// Variable declaring if this type reads the `opacity` parameter passed to
 	/// [`into_paths`](IntoPaths::into_paths)
