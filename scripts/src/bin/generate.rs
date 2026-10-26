@@ -210,7 +210,12 @@ fn generate_icon(iconset: &IconSet) -> String {
 	icon.push_str(pascalcase_name);
 	icon.push_str(";\nimpl Icon for ");
 	icon.push_str(pascalcase_name);
-	icon.push_str(" {");
+	icon.push_str(" {\n\tconst INIT: ");
+	icon.push_str(pascalcase_name);
+	icon.push_str(" = ");
+	icon.push_str(pascalcase_name);
+	#[expect(clippy::single_char_add_str)]
+	icon.push_str(";");
 
 	let weights = [
 		("bold", bold),
@@ -241,9 +246,7 @@ fn generate_icon(iconset: &IconSet) -> String {
 		icon.push_str(") }");
 	}
 
-	icon.push_str("\n\t#[inline(always)] fn default() -> Self { ");
-	icon.push_str(pascalcase_name);
-	icon.push_str(" }\n}");
+	icon.push_str("\n}");
 
 	icon
 }

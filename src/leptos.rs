@@ -12,9 +12,9 @@ mod util;
 /// Phosphor icon component
 #[component]
 pub fn Icon<I, W>(
-	#[prop(default = I::default())]
+	#[prop(default = I::INIT)]
 	icon: I,
-	#[prop(default = W::default())]
+	#[prop(default = W::INIT)]
 	weight: W,
 	#[prop(optional, into)]
 	duotone_opacity: Option<Signal<f32>>

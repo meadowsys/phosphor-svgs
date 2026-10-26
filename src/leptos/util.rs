@@ -4,22 +4,22 @@ use leptos::reactive::wrappers::read::Signal;
 use std::mem::MaybeUninit;
 
 pub trait Icon {
+	#[doc(hidden)]
+	const INIT: Self;
+
 	fn bold_data() -> impl IntoPaths;
 	fn duotone_data() -> impl IntoPaths;
 	fn fill_data() -> impl IntoPaths;
 	fn light_data() -> impl IntoPaths;
 	fn regular_data() -> impl IntoPaths;
 	fn thin_data() -> impl IntoPaths;
-
-	#[doc(hidden)]
-	fn default() -> Self;
 }
 
 pub trait Weight {
-	fn get_icon_data<I: Icon>() -> impl IntoPaths;
-
 	#[doc(hidden)]
-	fn default() -> Self;
+	const INIT: Self;
+
+	fn get_icon_data<I: Icon>() -> impl IntoPaths;
 }
 
 pub struct Path {
