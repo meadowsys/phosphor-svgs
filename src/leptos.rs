@@ -46,3 +46,13 @@ where
 		</svg>
 	}
 }
+
+/// Function to get whether or not a combination of icon and weight makes use of
+/// the opacity parameter
+///
+/// Might not be public or stable or kept. Don't know. Don't rely on this.
+#[doc(hidden)]
+#[inline]
+pub fn uses_opacity<I: Icon, W: Weight>() -> bool {
+	W::get_icon_data::<I>().needs_opacity()
+}
