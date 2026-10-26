@@ -1,6 +1,7 @@
 use leptos::{ IntoView, view };
 use leptos::attr::custom::CustomAttribute as _;
 use leptos::reactive::wrappers::read::Signal;
+use std::mem::MaybeUninit;
 
 pub trait Icon {
 	fn bold_data() -> impl IntoPaths;
@@ -39,14 +40,36 @@ pub(super) fn po(d: &'static str) -> PathOpacity {
 	PathOpacity { d }
 }
 
-pub trait IntoPaths {
-	fn into_paths(self, opacity: Signal<f32>) -> impl IntoView;
+pub unsafe trait IntoPaths {
+	/// Variable declaring if this type reads the `opacity` parameter passed to
+	/// [`into_paths`](IntoPaths::into_paths)
+	///
+	/// # Safety
+	///
+	/// For implementors: if you read the `opacity` parameter, you must set this
+	/// to true.
+	///
+	/// For consumers: if this is set to true, you must initialise the `opacity`
+	/// parameter.
+	const NEEDS_OPACITY: bool;
+
+	/// # Safety
+	///
+	/// If [`IntoPaths::NEEDS_OPACITY`] is `true`, the value passed to the `opacity`
+	/// parameter must be initialised.
+	unsafe fn into_paths(self, opacity: MaybeUninit<Signal<f32>>) -> impl IntoView;
+
+	// make NEEDS_OPACITY available from a value
+	#[inline(always)]
+	fn needs_opacity(&self) -> bool { Self::NEEDS_OPACITY }
 }
 
-impl IntoPaths for Path {
+unsafe impl IntoPaths for Path {
+	// we dont use it
+	const NEEDS_OPACITY: bool = false;
+
 	#[inline(always)]
-	fn into_paths(self, opacity: Signal<f32>) -> impl IntoView {
-		let _ = opacity;
+	unsafe fn into_paths(self, _: MaybeUninit<Signal<f32>>) -> impl IntoView {
 		let Self { d } = self;
 
 		view! {
@@ -55,10 +78,15 @@ impl IntoPaths for Path {
 	}
 }
 
-impl IntoPaths for PathOpacity {
+unsafe impl IntoPaths for PathOpacity {
+	const NEEDS_OPACITY: bool = true;
+
 	#[inline(always)]
-	fn into_paths(self, opacity: Signal<f32>) -> impl IntoView {
+	unsafe fn into_paths(self, opacity: MaybeUninit<Signal<f32>>) -> impl IntoView {
 		let Self { d } = self;
+		// SAFETY: caller initialised the variable according to NEEDS_OPACITY
+		// which we set to true
+		let opacity = unsafe { *opacity.assume_init_ref() };
 
 		view! {
 			<path d=d opacity=opacity />
@@ -68,15 +96,24 @@ impl IntoPaths for PathOpacity {
 
 macro_rules! gen_into_path {
 	{ $($p:ident)* } => {
-		impl<$($p),*> IntoPaths for ($($p),*)
+		unsafe impl<$($p),*> IntoPaths for ($($p),*)
 		where
 			$($p: IntoPaths),*
 		{
+			// if any of the type params read it, we indirectly read it and
+			// need to declare this true
+			const NEEDS_OPACITY: bool = false $(|| $p::NEEDS_OPACITY)*;
+
 			#[inline(always)]
-			fn into_paths(self, opacity: Signal<f32>) -> impl IntoView {
+			unsafe fn into_paths(self, opacity: MaybeUninit<Signal<f32>>) -> impl IntoView {
 				#[expect(non_snake_case, reason = "macro")]
 				let ($($p),*) = self;
-				($($p.into_paths(opacity)),*)
+
+				// SAFETY:
+				// - caller set `opacity`
+				// - `NEEDS_OPACITY` is set depending on type parameters,
+				// - `into_paths` implementations of type parameters promises to behave too
+				unsafe { ($($p.into_paths(opacity)),*) }
 			}
 		}
 	}

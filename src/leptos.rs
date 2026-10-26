@@ -3,6 +3,7 @@ use leptos::{ IntoView, component, view };
 use leptos::attr::custom::CustomAttribute as _;
 use leptos::html::ElementChild as _;
 use leptos::reactive::wrappers::read::Signal;
+use std::mem::MaybeUninit;
 
 pub mod icons;
 pub mod weights;
@@ -14,8 +15,8 @@ pub fn Icon<I, W>(
 	icon: I,
 	#[prop(default = W::default())]
 	weight: W,
-	#[prop(into, default = Signal::stored(0.2))]
-	duotone_opacity: Signal<f32>
+	#[prop(optional, into)]
+	duotone_opacity: Option<Signal<f32>>
 ) -> impl IntoView
 where
 	I: Icon,
@@ -30,8 +31,14 @@ where
 	// these are ZSTs and the values are only to enable attribute API
 	let _ = (icon, weight);
 
-	let paths = W::get_icon_data::<I>()
-		.into_paths(duotone_opacity);
+	let icon_data = W::get_icon_data::<I>();
+	let duotone_opacity = match duotone_opacity {
+		Some(duotone_opacity) => { MaybeUninit::new(duotone_opacity) }
+		None if icon_data.needs_opacity() => { MaybeUninit::new(Signal::stored(0.2)) }
+		None => { MaybeUninit::uninit() }
+	};
+	// SAFETY: we checked the needs_opacity value and initialised it as required
+	let paths = unsafe { icon_data.into_paths(duotone_opacity) };
 
 	view! {
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
