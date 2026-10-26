@@ -33,13 +33,27 @@ where
 	let _ = (icon, weight);
 
 	let icon_data = W::get_icon_data::<I>();
+	let needs_opacity = icon_data.needs_opacity();
 	let duotone_opacity = match duotone_opacity {
+		// if it's passed in, it's unconditionally set
 		Some(duotone_opacity) => { MaybeUninit::new(duotone_opacity) }
-		None if icon_data.needs_opacity() => { MaybeUninit::new(Signal::stored(0.2)) }
+		// if it isn't passed in, it's set if needs_opacity
+		None if needs_opacity => { MaybeUninit::new(Signal::stored(0.2)) }
 		None => { MaybeUninit::uninit() }
 	};
+
 	// SAFETY: we checked the needs_opacity value and initialised it as required
-	let paths = unsafe { icon_data.into_paths(duotone_opacity) };
+	let paths = unsafe {
+		icon_data.into_paths(
+			duotone_opacity,
+			// if needs_opacity is true it's always set
+			// either via passed in param or default initialisation
+			#[cfg(debug_assertions)]
+			needs_opacity,
+			#[cfg(debug_assertions)]
+			std::any::type_name::<(I, W)>()
+		)
+	};
 
 	view! {
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
